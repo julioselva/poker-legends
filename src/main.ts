@@ -1,4 +1,4 @@
-import { Logger as Writer } from '@nestjs/common';
+import { Logger as Writer, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
@@ -9,9 +9,9 @@ import { AppModule } from './app.module';
 const serverArt = `
 .------..------..------..------..------.     .------..------..------..------..------..------..------.
 |P.--. ||O.--. ||K.--. ||E.--. ||R.--. |.-.  |L.--. ||E.--. ||G.--. ||E.--. ||N.--. ||D.--. ||S.--. |
-| :/\\: || :/\\: || :/\\: || (\\/) || :(): ((5)) | :/\\: || (\\/) || :/\\: || (\\/) || :(): || :/\\: || :/\\: |
+| :/\\: || :/\\: || :/\\: || (\\/) || :(): ((A)) | :/\\: || (\\/) || :/\\: || (\\/) || :(): || :/\\: || :/\\: |
 | (__) || :\\/: || :\\/: || :\\/: || ()() |'-.-.| (__) || :\\/: || :\\/: || :\\/: || ()() || (__) || :\\/: |
-| '--'P|| '--'O|| '--'K|| '--'E|| '--'R| ((1)) '--'L|| '--'E|| '--'G|| '--'E|| '--'N|| '--'D|| '--'S|
+| '--'P|| '--'O|| '--'K|| '--'E|| '--'R| ((♠)) '--'L|| '--'E|| '--'G|| '--'E|| '--'N|| '--'D|| '--'S|
 \`------'\`------'\`------'\`------'\`------'  '-'\`------'\`------'\`------'\`------'\`------'\`------'\`------'`;
 /* eslint-enable max-len */
 
@@ -25,6 +25,7 @@ async function bootstrap() {
   app.useLogger(app.get(Logger));
   app.setGlobalPrefix(root);
   app.useGlobalInterceptors(new LoggerErrorInterceptor());
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.enableCors({ origin: '*' });
 
   const logger = new Writer('bootstrap');
