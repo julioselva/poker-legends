@@ -6,6 +6,7 @@ import configuration from './config/configuration';
 import { LoggerModule } from './lib/logger/logger.module';
 import { LoggerOptions } from './lib/logger/logger.options';
 import { HealthModule } from './health/health.module';
+import { CardsModule } from './cards/cards.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { HealthModule } from './health/health.module';
       useFactory: (loggerOptions: LoggerOptions) => loggerOptions.make(),
     }),
     HealthModule,
+    CardsModule,
   ],
   exports: [],
   controllers: [],
