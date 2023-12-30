@@ -5,7 +5,7 @@ import { GenerateDeck } from './use-cases/generate-deck.use-case.';
 
 @Module({
   imports: [],
-  exports: [],
+  exports: [GenerateDeck, DrawCards],
   controllers: [],
   providers: [GenerateDeck, DrawCards],
 })

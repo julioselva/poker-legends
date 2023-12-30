@@ -35,7 +35,7 @@ module.exports = {
     'import/no-duplicates': 'error',
     'max-len': [
       'error',
-      { code: 100, ignoreStrings: true, ignoreComments: true },
+      { code: 120, ignoreStrings: true, ignoreComments: true },
     ],
   },
 };

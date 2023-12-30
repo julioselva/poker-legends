@@ -2,15 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 import { Card } from '../cards.type';
 
-// ---- Errors ----
-export abstract class CardsE extends Error {}
-
-// ---- NoMoreCardsLeftE ----
-export class NoMoreCardsLeftE extends CardsE {
-  public readonly name = NoMoreCardsLeftE.name;
-  public readonly message = 'There are no more cards in the deck';
-}
-
 // ---- Command ----
 export class DrawCardsCommand {
   constructor(
@@ -23,6 +14,15 @@ export class DrawCardsCommand {
 export class DrawnCardsResult {
   drawnCard: Card;
   remaningCards: Card[];
+}
+
+// ---- Errors ----
+export abstract class CardsE extends Error {}
+
+// ---- NoMoreCardsLeftE ----
+export class NoMoreCardsLeftE extends CardsE {
+  public readonly name = NoMoreCardsLeftE.name;
+  public readonly message = 'There are no more cards in the deck';
 }
 
 @Injectable()

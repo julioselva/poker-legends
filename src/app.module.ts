@@ -2,11 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule as PinoLoggerModule } from 'nestjs-pino';
 
+import { CardsModule } from './cards/cards.module';
 import configuration from './config/configuration';
+import { GameModule } from './game/game.module';
+import { HealthModule } from './health/health.module';
 import { LoggerModule } from './lib/logger/logger.module';
 import { LoggerOptions } from './lib/logger/logger.options';
-import { HealthModule } from './health/health.module';
-import { CardsModule } from './cards/cards.module';
+import { HandModule } from './hand/hand.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { CardsModule } from './cards/cards.module';
     }),
     HealthModule,
     CardsModule,
+    GameModule,
+    HandModule,
   ],
   exports: [],
   controllers: [],

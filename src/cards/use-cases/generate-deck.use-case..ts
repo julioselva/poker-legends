@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { CardRanks, CardSuits } from '../card.constant';
+import { CardRanks, CardSuits } from '../cards.constant';
 import { Card } from '../cards.type';
 
 @Injectable()
