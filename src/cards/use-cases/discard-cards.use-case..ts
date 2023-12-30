@@ -33,10 +33,7 @@ export class DiscardCardsUseCase {
       throw new NoMoreCardsLeftE();
 
     return this.drawCards.exec(
-      new DrawCardsCommand(
-        remainingCards.concat(...discardedCards),
-        discardedCards.length,
-      ),
+      new DrawCardsCommand(remainingCards, discardedCards.length),
     );
   }
 }
