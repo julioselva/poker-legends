@@ -15,9 +15,11 @@ import {
 
 // ---- Command ----
 export class UpdateTableCommand {
-  hands: Hand[];
-  deck: Card[];
-  action: TableAction;
+  constructor(
+    public readonly hands: Hand[],
+    public readonly deck: Card[],
+    public readonly action: TableAction,
+  ) {}
 }
 
 // ---- Result ----
@@ -32,6 +34,8 @@ export class UpdateTableUseCase {
   constructor(public readonly discardCards: DiscardCardsUseCase) {}
 
   exec(cmd: UpdateTableCommand): UpdateTableResult {
+    console.log(cmd);
+
     const { action } = cmd;
 
     switch (action.kind) {

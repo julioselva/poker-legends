@@ -19,8 +19,8 @@ export type TableActionDataFoldResult = undefined;
 
 // ---- Action Command ----
 export enum TableActionKind {
-  DiscardCards,
-  Fold,
+  DiscardCards = 'DISCARD_CARTS',
+  Fold = 'FOLD',
 }
 
 export type TableActionData = TableActionDataDiscardCards | TableActionDataFold;
