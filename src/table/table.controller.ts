@@ -1,12 +1,14 @@
-import { Body, Controller, Post, Put } from '@nestjs/common';
+import { Body, Controller, Post, Put, UseFilters } from '@nestjs/common';
 
 import { TableCreateRequest } from './payloads/http/table-create.request';
 import { TableCreateResponse } from './payloads/http/table-create.response';
 import { TableUpdateRequest } from './payloads/http/table-update.request';
 import { TableUpdateResponse } from './payloads/http/table-update.response';
+import { TableEFilter } from './table.filter';
 import { CreateTableUseCase } from './use-cases/create-table.use-case';
 import { UpdateTableUseCase } from './use-cases/update-table.use-case';
 
+@UseFilters(TableEFilter)
 @Controller('table')
 export class TableController {
   constructor(
