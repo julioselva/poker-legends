@@ -17,8 +17,8 @@ export class DiscardCardsCommand {
 
 // ---- Result ----
 export class DiscardCardsResult {
-  drawnCard: Card;
-  remaningCards: Card[];
+  drawnCards: Card[];
+  remainingCards: Card[];
 }
 
 @Injectable()

@@ -13,8 +13,8 @@ export class DrawCardsCommand {
 
 // ---- Result ----
 export class DrawnCardsResult {
-  drawnCard: Card;
-  remaningCards: Card[];
+  drawnCards: Card[];
+  remainingCards: Card[];
 }
 
 @Injectable()
@@ -26,8 +26,8 @@ export class DrawCardsUseCase {
       throw new NoMoreCardsLeftE();
 
     return {
-      drawnCard: remainingCards.at(-amount),
-      remaningCards: remainingCards.slice(-amount),
+      drawnCards: remainingCards.slice(-amount),
+      remainingCards: remainingCards.slice(-amount),
     };
   }
 }

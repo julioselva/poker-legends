@@ -4,7 +4,7 @@ import { EvaluateHandUseCase } from './use-cases/evaluate-hand.use-case';
 
 @Module({
   imports: [],
-  exports: [],
+  exports: [EvaluateHandUseCase],
   controllers: [],
   providers: [EvaluateHandUseCase],
 })

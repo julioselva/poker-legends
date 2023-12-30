@@ -9,6 +9,7 @@ import { HealthModule } from './health/health.module';
 import { LoggerModule } from './lib/logger/logger.module';
 import { LoggerOptions } from './lib/logger/logger.options';
 import { HandModule } from './hand/hand.module';
+import { TableModule } from './table/table.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { HandModule } from './hand/hand.module';
     CardsModule,
     GameModule,
     HandModule,
+    TableModule,
   ],
   exports: [],
   controllers: [],

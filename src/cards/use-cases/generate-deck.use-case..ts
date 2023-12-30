@@ -4,7 +4,7 @@ import { CardRanks, CardSuits } from '../cards.constant';
 import { Card } from '../cards.type';
 
 @Injectable()
-export class GenerateDeck {
+export class GenerateDeckUseCase {
   private generateDeck() {
     const deck: Card[] = [];
 

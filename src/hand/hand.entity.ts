@@ -15,14 +15,14 @@ export class HandEntity extends Array<Card> {
 
   handHasSequence(): boolean {
     const handHasSequenceRecursive = (
-      remaningHand: Card[],
+      remainingHand: Card[],
       currentCard: Card,
     ): boolean => {
-      if (remaningHand.length === 0) return true;
-      if (remaningHand.at(0).rank.value === currentCard.rank.value - 1)
+      if (remainingHand.length === 0) return true;
+      if (remainingHand.at(0).rank.value === currentCard.rank.value - 1)
         return handHasSequenceRecursive(
-          remaningHand.slice(1),
-          remaningHand.at(0),
+          remainingHand.slice(1),
+          remainingHand.at(0),
         );
 
       return false;
