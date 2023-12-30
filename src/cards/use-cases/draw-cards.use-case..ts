@@ -6,7 +6,7 @@ import { Card } from '../cards.type';
 // ---- Command ----
 export class DrawCardsCommand {
   constructor(
-    public readonly remainingCards: Card[],
+    public readonly deck: Card[],
     public readonly amount: number = 1,
   ) {}
 }
@@ -20,14 +20,13 @@ export class DrawnCardsResult {
 @Injectable()
 export class DrawCardsUseCase {
   exec(cmd: DrawCardsCommand): DrawnCardsResult {
-    const { amount, remainingCards } = cmd;
+    const { amount, deck } = cmd;
 
-    if (!remainingCards || remainingCards.length < amount)
-      throw new NoMoreCardsLeftE();
+    if (!deck || deck.length < amount) throw new NoMoreCardsLeftE();
 
     return {
-      drawnCards: remainingCards.slice(-amount),
-      remainingCards: remainingCards.slice(-amount),
+      drawnCards: deck.splice(-amount),
+      remainingCards: deck,
     };
   }
 }

@@ -7,7 +7,7 @@ import {
 } from '../../cards/use-cases/draw-cards.use-case.';
 import { GenerateDeckUseCase } from '../../cards/use-cases/generate-deck.use-case.';
 import { Hand } from '../../game/game.type';
-import { NotEnoughPlayersE } from '../table.error';
+import { NotEnoughPlayersE, TooManyPlayersE } from '../table.error';
 
 // ---- Command ----
 export class CreateTableCommand {
@@ -31,6 +31,7 @@ export class CreateTableUseCase {
     const { tableOf } = cmd;
 
     if (tableOf < 2) throw new NotEnoughPlayersE();
+    if (tableOf > 5) throw new TooManyPlayersE();
 
     const generatedDeck = this.generateDeck.exec();
     return this.dealCards(generatedDeck, tableOf);
