@@ -1,8 +1,4 @@
-import {
-  ClassSerializerInterceptor,
-  Logger as Writer,
-  ValidationPipe,
-} from '@nestjs/common';
+import { ClassSerializerInterceptor, Logger as Writer, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
@@ -28,16 +24,11 @@ async function bootstrap() {
 
   app.useLogger(app.get(Logger));
   app.setGlobalPrefix(root);
-  app.useGlobalInterceptors(
-    new LoggerErrorInterceptor(),
-    new ClassSerializerInterceptor(new Reflector()),
-  );
+  app.useGlobalInterceptors(new LoggerErrorInterceptor(), new ClassSerializerInterceptor(new Reflector()));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.enableCors({ origin: '*' });
 
   const logger = new Writer('bootstrap');
-  await app.listen(port, () =>
-    logger.log(`${serverArt}\nHttp application started at port: ${port}.`),
-  );
+  await app.listen(port, () => logger.log(`${serverArt}\nHttp application started at port: ${port}.`));
 }
 bootstrap();

@@ -3,8 +3,13 @@ import { asapScheduler, from, map, Observable, of, scheduled, tap, toArray } fro
 
 import { Card } from '../../cards/cards.type';
 import { DiscardCardsCommand, DiscardCardsUseCase } from '../../cards/use-cases/discard-cards.use-case.';
-import { Hand } from '../../game/game.type';
+import { Hand, HandRanking } from '../../game/game.type';
 import { EvaluateHandCommand, EvaluateHandUseCase } from '../../game/use-cases/evaluate-hand.use-case';
+import {
+  EvaluateHandRankingCommand,
+  EvaluateHandRankingsUseCase,
+} from '../../game/use-cases/evaluate-hand-rankings.use-case';
+import { BetterMap } from '../../lib/ts/BetterMap';
 import { TableAction, TableActionDataDiscardCards, TableActionKind, TableActionResult } from '../table.type';
 
 // ---- Command ----
@@ -28,6 +33,7 @@ export class UpdateTableUseCase {
   constructor(
     public readonly discardCards: DiscardCardsUseCase,
     public readonly evaluateHandUseCase: EvaluateHandUseCase,
+    public readonly evaluateHandRankingsUseCase: EvaluateHandRankingsUseCase,
   ) {}
 
   exec(cmd: UpdateTableCommand): Observable<UpdateTableResult> {
@@ -59,17 +65,14 @@ export class UpdateTableUseCase {
     return scheduled(from(hands), asapScheduler).pipe(
       map((hand) => this.evaluateHandUseCase.exec(new EvaluateHandCommand(hand))),
       toArray(),
-      tap((result) => console.log(result)),
-      map(() => ({
+      map((result) => new BetterMap<Hand, HandRanking>(...result)),
+      map((mapped) => this.evaluateHandRankingsUseCase.exec(new EvaluateHandRankingCommand(mapped))),
+      map(([hand, handRanking]) => ({
         hands,
         remainingCards: deck,
         result: {
-          winnerHand: hands[0],
-          handRank: {
-            kind: 'FourOfAKind',
-            fourRank: { kind: 'Ace', value: 12 },
-            kicker: { kind: 'King', value: 11 },
-          },
+          winnerHand: hand,
+          handRanking,
         },
       })),
     );

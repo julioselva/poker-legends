@@ -1,9 +1,4 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpStatus,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 
 @Catch(Error)
@@ -15,8 +10,6 @@ export class TableEFilter implements ExceptionFilter {
     const message = exception.message;
     const error = exception.name;
 
-    return response
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ error, message });
+    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error, message });
   }
 }

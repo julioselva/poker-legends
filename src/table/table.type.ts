@@ -20,7 +20,7 @@ export type TableActionDataFoldResult = undefined;
 // ---- Action Showdown ----
 export type TableActionShowdownResult = {
   winnerHand: Hand;
-  handRank: HandRanking;
+  handRanking: HandRanking;
 };
 
 // ---- Action Command ----

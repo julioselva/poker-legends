@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 
 import { EvaluateHandUseCase } from './use-cases/evaluate-hand.use-case';
+import { EvaluateHandRankingsUseCase } from './use-cases/evaluate-hand-rankings.use-case';
 
 @Module({
   imports: [],
-  exports: [EvaluateHandUseCase],
+  exports: [EvaluateHandUseCase, EvaluateHandRankingsUseCase],
   controllers: [],
-  providers: [EvaluateHandUseCase],
+  providers: [EvaluateHandUseCase, EvaluateHandRankingsUseCase],
 })
 export class GameModule {}

@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import {
-  DiscardCardsThresholdOverflowE,
-  NoMoreCardsLeftE,
-} from '../cards.error';
+import { DiscardCardsThresholdOverflowE, NoMoreCardsLeftE } from '../cards.error';
 import { Card } from '../cards.type';
 import { DrawCardsCommand, DrawCardsUseCase } from './draw-cards.use-case.';
 
@@ -29,11 +26,8 @@ export class DiscardCardsUseCase {
 
     if (discardedCards.length > 3) throw new DiscardCardsThresholdOverflowE();
 
-    if (!remainingCards || remainingCards.length < discardedCards.length)
-      throw new NoMoreCardsLeftE();
+    if (!remainingCards || remainingCards.length < discardedCards.length) throw new NoMoreCardsLeftE();
 
-    return this.drawCards.exec(
-      new DrawCardsCommand(remainingCards, discardedCards.length),
-    );
+    return this.drawCards.exec(new DrawCardsCommand(remainingCards, discardedCards.length));
   }
 }

@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
 
 import { CardRanks } from '../../cards/cards.constant';
 import { HandEntity } from '../../hand/hand.entity';
 import { EmptyHandE } from '../game.error';
-import { FourOfAKind, Hand, HandRanking, StraightFlush } from '../game.type';
+import { FourOfAKind, Hand, HandRanking, HighCard, StraightFlush } from '../game.type';
 
 // ---- Command ----
 export class EvaluateHandCommand {
@@ -18,7 +17,7 @@ export class EvaluateHandResult {
 
 @Injectable()
 export class EvaluateHandUseCase {
-  exec(cmd: EvaluateHandCommand) {
+  exec(cmd: EvaluateHandCommand): [Hand, HandRanking] {
     const { hand } = cmd;
 
     if (!hand || !hand.length) {
@@ -28,16 +27,14 @@ export class EvaluateHandUseCase {
     const handEntity = new HandEntity();
     handEntity.push(...hand);
 
-    const handRankingCheks = [this.getStraightFlush, this.checkIfFourOfAKind];
+    const handRankingCheks = [this.getStraightFlush, this.getFourOfAKind, this.getHighestCard];
 
     for (const checks of handRankingCheks) {
       const result = checks(handEntity);
       if (result !== null && result !== undefined) {
-        return result;
+        return [hand, result];
       }
     }
-
-    return null;
   }
 
   private getStraightFlush(hand: HandEntity): StraightFlush | undefined {
@@ -46,12 +43,13 @@ export class EvaluateHandUseCase {
         kind: 'StraightFlush',
         suit: hand.at(0).suit,
         highestRank: hand.findHighestRank(),
+        value: 8,
       };
 
     return null;
   }
 
-  private checkIfFourOfAKind(hand: HandEntity): FourOfAKind | undefined {
+  private getFourOfAKind(hand: HandEntity): FourOfAKind | undefined {
     const mappedMatches = hand.handMappedMatches;
     const [maybeCardRankKind] = mappedMatches.find(([, amount]) => amount === 4);
 
@@ -62,9 +60,20 @@ export class EvaluateHandUseCase {
         kind: 'FourOfAKind',
         fourRank: CardRanks.find((cr) => cr.kind === maybeCardRankKind),
         kicker: CardRanks.find((cr) => cr.kind === kicker),
+        value: 7,
       };
     }
 
     return null;
+  }
+
+  private getHighestCard(hand: HandEntity): HighCard {
+    const { rank, suit } = hand.handSort().at(-1);
+
+    return {
+      kind: 'HighCard',
+      card: { suit, rank },
+      value: 0,
+    };
   }
 }

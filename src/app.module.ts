@@ -5,10 +5,10 @@ import { LoggerModule as PinoLoggerModule } from 'nestjs-pino';
 import { CardsModule } from './cards/cards.module';
 import configuration from './config/configuration';
 import { GameModule } from './game/game.module';
+import { HandModule } from './hand/hand.module';
 import { HealthModule } from './health/health.module';
 import { LoggerModule } from './lib/logger/logger.module';
 import { LoggerOptions } from './lib/logger/logger.options';
-import { HandModule } from './hand/hand.module';
 import { TableModule } from './table/table.module';
 
 @Module({

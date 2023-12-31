@@ -1,5 +1,5 @@
 export class BetterMap<K, V> extends Map<K, V> {
-  constructor(...args) {
+  constructor(...args: [K, V][]) {
     super(args);
   }
 
@@ -13,5 +13,17 @@ export class BetterMap<K, V> extends Map<K, V> {
     };
 
     return findRecursive(entries);
+  }
+
+  reduce(callbackfn: (accumalator: [K, V], currentValue: [K, V]) => [K, V]): [K, V] {
+    const entries = Array.from(this.entries());
+
+    const reduceRecursive = (remainingEntries: [K, V][], acc: [K, V]): [K, V] => {
+      if (!remainingEntries.length) return acc;
+      return reduceRecursive(remainingEntries.slice(1), callbackfn(acc, remainingEntries.at(0)));
+    };
+
+    if (entries.length) return reduceRecursive(entries, entries.at(0));
+    return [null, null];
   }
 }
