@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { CardRanks } from '../../cards/cards.constant';
+import { CardRanks } from '../../cards/cards.type';
 import { HandEntity } from '../../hand/hand.entity';
 import { EmptyHandE } from '../game.error';
 import { FourOfAKind, Hand, HandRanking, HighCard, StraightFlush } from '../game.type';

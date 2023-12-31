@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { CardRanks, CardSuits } from '../cards.constant';
-import { Card } from '../cards.type';
+import { Card, CardRanks, CardSuits } from '../cards.type';
 
 @Injectable()
 export class GenerateDeckUseCase {
