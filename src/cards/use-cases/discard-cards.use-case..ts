@@ -21,6 +21,7 @@ export class DiscardCardsResult {
 @Injectable()
 export class DiscardCardsUseCase {
   constructor(private readonly drawCards: DrawCardsUseCase) {}
+
   exec(cmd: DiscardCardsCommand): DiscardCardsResult {
     const { discardedCards, remainingCards } = cmd;
 

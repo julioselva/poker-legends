@@ -5,3 +5,6 @@
 [ ] add remaining game evaluations
 [ ] add integration tests
 [ ] add unit tests
+[ ] improve request/response serialization
+[ ] add request validation
+[ ] refactor table update using strategy

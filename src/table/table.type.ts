@@ -10,13 +10,6 @@ export type TableActionDataDiscardCardsResult = {
   drawnCards: Card[];
 };
 
-// ---- Action Data Fold ----
-export type TableActionDataFold = {
-  currentHand: Hand;
-};
-
-export type TableActionDataFoldResult = undefined;
-
 // ---- Action Showdown ----
 export type TableActionShowdownResult = {
   winnerHand: Hand;
@@ -26,11 +19,10 @@ export type TableActionShowdownResult = {
 // ---- Action Command ----
 export enum TableActionKind {
   DiscardCards = 'DISCARD_CARTS',
-  Fold = 'FOLD',
   Showdown = 'SHOWDOWN',
 }
 
-export type TableActionData = TableActionDataDiscardCards | TableActionDataFold;
+export type TableActionData = TableActionDataDiscardCards;
 
 export type TableAction = {
   kind: TableActionKind;
@@ -38,7 +30,4 @@ export type TableAction = {
 };
 
 // ---- Action Result ----
-export type TableActionResult =
-  | TableActionDataDiscardCardsResult
-  | TableActionDataFoldResult
-  | TableActionShowdownResult;
+export type TableActionResult = TableActionDataDiscardCardsResult | TableActionShowdownResult;
