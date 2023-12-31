@@ -1,19 +1,38 @@
 import { Card } from '../cards/cards.type';
 import { Hand, HandRanking } from '../game/game.type';
 
-// ---- Action Data Discard Cards ----
+// ---- Action Discard Cards ----
 export type TableActionDataDiscardCards = {
   discardedCards: Card[];
+};
+
+export type TableActionDiscardCards<T extends TableActionKind.DiscardCards> = {
+  kind: T;
+  data: TableActionDataDiscardCards;
 };
 
 export type TableActionDataDiscardCardsResult = {
   drawnCards: Card[];
 };
 
+export type TableActionDiscardCardsResult<T extends TableActionKind.DiscardCards> = {
+  kind: T;
+  result: TableActionDataDiscardCardsResult;
+};
+
 // ---- Action Showdown ----
-export type TableActionShowdownResult = {
+export type TableActionShowdown<T extends TableActionKind.Showdown> = {
+  kind: T;
+};
+
+export type TableActionDataShowdownResult = {
   winnerHand: Hand;
   handRanking: HandRanking;
+};
+
+export type TableActionShowdownResult<T extends TableActionKind.Showdown> = {
+  kind: T;
+  result: TableActionDataShowdownResult;
 };
 
 // ---- Action Command ----
@@ -22,12 +41,14 @@ export enum TableActionKind {
   Showdown = 'SHOWDOWN',
 }
 
-export type TableActionData = TableActionDataDiscardCards;
+export type TableAction<T extends TableActionKind> = T extends TableActionKind.Showdown
+  ? TableActionShowdown<T>
+  : T extends TableActionKind.DiscardCards
+    ? TableActionDiscardCards<T>
+    : never;
 
-export type TableAction = {
-  kind: TableActionKind;
-  data: TableActionData;
-};
-
-// ---- Action Result ----
-export type TableActionResult = TableActionDataDiscardCardsResult | TableActionShowdownResult;
+export type TableActionResult<T extends TableActionKind> = T extends TableActionKind.Showdown
+  ? TableActionShowdownResult<T>
+  : T extends TableActionKind.DiscardCards
+    ? TableActionDiscardCardsResult<T>
+    : never;

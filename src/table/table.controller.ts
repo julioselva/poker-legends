@@ -25,8 +25,6 @@ export class TableController {
 
   @Put()
   update(@Body() body: TableUpdateRequest): Observable<TableUpdateResponse> {
-    return this.updateTableUseCase
-      .exec(body.toCommand())
-      .pipe(map((result) => new TableUpdateResponse(result)));
+    return this.updateTableUseCase.exec(body.toCommand()).pipe(map((result) => new TableUpdateResponse(result)));
   }
 }
