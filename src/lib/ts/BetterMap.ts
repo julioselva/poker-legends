@@ -7,7 +7,7 @@ export class BetterMap<K, V> extends Map<K, V> {
     const entries = Array.from(this.entries());
 
     const findRecursive = (remainingEntries: [K, V][]): [K, V] => {
-      if (remainingEntries.length === 0) return null;
+      if (!remainingEntries.length) return [null, null];
       if (predicate(remainingEntries.at(0))) return remainingEntries.at(0);
       return findRecursive(remainingEntries.slice(1));
     };

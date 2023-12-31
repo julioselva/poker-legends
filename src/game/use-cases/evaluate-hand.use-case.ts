@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { plainToClass, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 
-import { CardRank, CardSuit } from '../../cards/cards.type';
+import { CardRanks } from '../../cards/cards.constant';
 import { HandEntity } from '../../hand/hand.entity';
-import { BetterMap } from '../../lib/ts/BetterMap';
+import { EmptyHandE } from '../game.error';
 import { FourOfAKind, Hand, HandRanking, StraightFlush } from '../game.type';
 
 // ---- Command ----
 export class EvaluateHandCommand {
-  hand: Hand;
+  constructor(public readonly hand: Hand) {}
 }
 
 // ---- Result ----
@@ -16,25 +16,18 @@ export class EvaluateHandResult {
   handRanking: HandRanking;
 }
 
-// ---- Errors ----
-export abstract class GameE extends Error {}
-
-// ---- NoMoreCardsLeftE ----
-export class EmptyHandE extends GameE {
-  public readonly name = EmptyHandE.name;
-  public readonly message = 'The hand is empty';
-}
-
 @Injectable()
 export class EvaluateHandUseCase {
   exec(cmd: EvaluateHandCommand) {
     const { hand } = cmd;
 
-    if (!hand || hand.length) {
+    if (!hand || !hand.length) {
       throw new EmptyHandE();
     }
 
-    const handEntity = plainToInstance<HandEntity, Hand>(HandEntity, hand);
+    const handEntity = new HandEntity();
+    handEntity.push(...hand);
+
     const handRankingCheks = [this.getStraightFlush, this.checkIfFourOfAKind];
 
     for (const checks of handRankingCheks) {
@@ -48,7 +41,7 @@ export class EvaluateHandUseCase {
   }
 
   private getStraightFlush(hand: HandEntity): StraightFlush | undefined {
-    if (hand.handHasSameRank() && hand.handSort().handHasSequence())
+    if (hand.handHasSameSuit() && hand.handSort().handHasSequence())
       return {
         kind: 'StraightFlush',
         suit: hand.at(0).suit,
@@ -59,20 +52,19 @@ export class EvaluateHandUseCase {
   }
 
   private checkIfFourOfAKind(hand: HandEntity): FourOfAKind | undefined {
-    const [maybeCardRank] = hand.handMappedMatches.find(
-      ([, amount]) => amount === 4,
-    );
+    const mappedMatches = hand.handMappedMatches;
+    const [maybeCardRankKind] = mappedMatches.find(([, amount]) => amount === 4);
 
-    if (maybeCardRank) {
-      const [kicker] = hand.handMappedMatches.find(
-        ([cardRank]) => cardRank != maybeCardRank,
-      );
+    if (maybeCardRankKind) {
+      const [kicker] = hand.handMappedMatches.find(([cardRankKind]) => cardRankKind != maybeCardRankKind);
 
       return {
         kind: 'FourOfAKind',
-        fourRank: maybeCardRank,
-        kicker,
+        fourRank: CardRanks.find((cr) => cr.kind === maybeCardRankKind),
+        kicker: CardRanks.find((cr) => cr.kind === kicker),
       };
     }
+
+    return null;
   }
 }

@@ -1,4 +1,5 @@
 import { Body, Controller, Post, Put, UseFilters } from '@nestjs/common';
+import { map, Observable } from 'rxjs';
 
 import { TableCreateRequest } from './payloads/http/table-create.request';
 import { TableCreateResponse } from './payloads/http/table-create.response';
@@ -23,8 +24,9 @@ export class TableController {
   }
 
   @Put()
-  update(@Body() body: TableUpdateRequest): TableUpdateResponse {
-    const result = this.updateTableUseCase.exec(body.toCommand());
-    return new TableUpdateResponse(result);
+  update(@Body() body: TableUpdateRequest): Observable<TableUpdateResponse> {
+    return this.updateTableUseCase
+      .exec(body.toCommand())
+      .pipe(map((result) => new TableUpdateResponse(result)));
   }
 }
