@@ -19,7 +19,7 @@ export type TwoPair = {
   kind: 'TwoPair';
   highPairRank: CardRank;
   lowPairRank: CardRank;
-  kicker: Hand;
+  kicker: Card;
   value: 2;
 };
 

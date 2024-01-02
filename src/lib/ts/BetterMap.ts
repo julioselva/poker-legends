@@ -3,7 +3,7 @@ export class BetterMap<K, V> extends Map<K, V> {
     super(args);
   }
 
-  find(predicate: (entry: [K, V]) => boolean) {
+  find(predicate: (entry: [K, V]) => boolean): [K, V] {
     const entries = Array.from(this.entries());
 
     const findRecursive = (remainingEntries: [K, V][]): [K, V] => {
@@ -25,5 +25,18 @@ export class BetterMap<K, V> extends Map<K, V> {
 
     if (entries.length) return reduceRecursive(entries, entries.at(0));
     return [null, null];
+  }
+
+  filter(predicate: (entry: [K, V]) => boolean): [K, V][] {
+    const entries = Array.from(this.entries());
+
+    const filterRecursive = (remainingEntries: [K, V][], filteredEntries: [K, V][]): [K, V][] => {
+      if (!remainingEntries.length) filteredEntries;
+      if (predicate(remainingEntries.at(0)))
+        return filterRecursive(remainingEntries.slice(1), [...filteredEntries, remainingEntries.at(0)]);
+      return filterRecursive(remainingEntries.slice(1), filteredEntries);
+    };
+
+    return filterRecursive(entries, new Array<[K, V]>());
   }
 }

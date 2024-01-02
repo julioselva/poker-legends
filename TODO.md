@@ -7,5 +7,6 @@
 [ ] add unit tests
 [ ] improve request/response serialization 
 [ ] add request validation
-[ ] refactor table update using strategy 
+[x] refactor table update using strategy 
 [ ] add documentation
+[ ] add player metadata
