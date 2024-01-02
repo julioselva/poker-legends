@@ -11,6 +11,8 @@ import {
 } from '../../game/use-cases/evaluate-hand-rankings.use-case';
 import { BetterMap } from '../../lib/ts/BetterMap';
 import { TableAction, TableActionKind, TableActionResult } from '../table.type';
+import { DoDiscardCardsStrategy } from './strategies/do-discard-cards.strategy';
+import { DoShowdownStrategy } from './strategies/do-showdown.strategy';
 
 // ---- Command ----
 export class UpdateTableCommand<T extends TableActionKind> {
@@ -31,9 +33,8 @@ export class UpdateTableResult<T extends TableActionKind> {
 @Injectable()
 export class UpdateTableUseCase {
   constructor(
-    public readonly discardCards: DiscardCardsUseCase,
-    public readonly evaluateHandUseCase: EvaluateHandUseCase,
-    public readonly evaluateHandRankingsUseCase: EvaluateHandRankingsUseCase,
+    private readonly doDiscardCardsStrategy: DoDiscardCardsStrategy,
+    private readonly doShowdownStrategy: DoShowdownStrategy,
   ) {}
 
   exec(cmd: UpdateTableCommand<TableActionKind>): Observable<UpdateTableResult<TableActionKind>> {
@@ -41,48 +42,9 @@ export class UpdateTableUseCase {
 
     switch (action.kind) {
       case TableActionKind.DiscardCards:
-        return this.doDiscardCards(cmd as UpdateTableCommand<TableActionKind.DiscardCards>);
+        return this.doDiscardCardsStrategy.exec(cmd as UpdateTableCommand<TableActionKind.DiscardCards>);
       case TableActionKind.Showdown:
-        return this.doShowdown(cmd as UpdateTableCommand<TableActionKind.Showdown>);
+        return this.doShowdownStrategy.exec(cmd as UpdateTableCommand<TableActionKind.Showdown>);
     }
-  }
-
-  private doDiscardCards<T extends TableActionKind.DiscardCards>(
-    cmd: UpdateTableCommand<T>,
-  ): Observable<UpdateTableResult<TableActionKind.DiscardCards>> {
-    const { deck, hands, action } = cmd;
-    const { data } = action;
-
-    const { drawnCards, remainingCards } = this.discardCards.exec(new DiscardCardsCommand(deck, data.discardedCards));
-
-    return of({
-      hands,
-      remainingCards,
-      action: { kind: TableActionKind.DiscardCards, result: { drawnCards } },
-    });
-  }
-
-  private doShowdown<T extends TableActionKind.Showdown>(
-    cmd: UpdateTableCommand<T>,
-  ): Observable<UpdateTableResult<TableActionKind.Showdown>> {
-    const { hands, deck } = cmd;
-
-    return scheduled(from(hands), asapScheduler).pipe(
-      map((hand) => this.evaluateHandUseCase.exec(new EvaluateHandCommand(hand))),
-      toArray(),
-      map((result) => new BetterMap<Hand, HandRanking>(...result)),
-      map((mapped) => this.evaluateHandRankingsUseCase.exec(new EvaluateHandRankingCommand(mapped))),
-      map(([hand, handRanking]) => ({
-        hands,
-        remainingCards: deck,
-        action: {
-          kind: TableActionKind.Showdown,
-          result: {
-            winnerHand: hand,
-            handRanking,
-          },
-        },
-      })),
-    );
   }
 }
