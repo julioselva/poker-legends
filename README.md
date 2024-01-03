@@ -17,7 +17,7 @@ The GE do not own this responsibility: authn, authz and persistence, instead it 
 ## Roadmap
 There is a lot of work to do and I am afraid of the time that I still have considering the holidays that usually took a lot from us.
 So please let me know if, considering there are only enhancements and the GE is working perfectly, if they are necessary to be implemented.
-To know about, please check the [TODO](./TODO.md).
+To know about it, please check the [TODO](./TODO.md).
 
 ## Testing it
 
