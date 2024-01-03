@@ -1,15 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { asapScheduler, from, map, Observable, of, scheduled, toArray } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { Card } from '../../cards/cards.type';
-import { DiscardCardsCommand, DiscardCardsUseCase } from '../../cards/use-cases/discard-cards.use-case.';
-import { Hand, HandRanking } from '../../game/game.type';
-import { EvaluateHandCommand, EvaluateHandUseCase } from '../../game/use-cases/evaluate-hand.use-case';
-import {
-  EvaluateHandRankingCommand,
-  EvaluateHandRankingsUseCase,
-} from '../../game/use-cases/evaluate-hand-rankings.use-case';
-import { BetterMap } from '../../lib/ts/BetterMap';
+import { Hand } from '../../game/game.type';
 import { TableAction, TableActionKind, TableActionResult } from '../table.type';
 import { DoDiscardCardsStrategy } from './strategies/do-discard-cards.strategy';
 import { DoShowdownStrategy } from './strategies/do-showdown.strategy';

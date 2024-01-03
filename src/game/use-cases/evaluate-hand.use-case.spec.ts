@@ -2,7 +2,6 @@ import { Card, CardRank, CardRanks, CardSuit, CardSuits } from '../../cards/card
 import { HandEntity } from '../../hand/hand.entity';
 import { Hand } from '../game.type';
 import { EvaluateHandCommand, EvaluateHandUseCase } from './evaluate-hand.use-case';
-import spyOn = jest.spyOn;
 
 describe('EvaluateHandUseCase', () => {
   let evaluateHandUseCase: EvaluateHandUseCase;

@@ -1,73 +1,329 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# POKER LEGENDS
+A 52-cards poker game engine statless and buit with NodeJS, NestJS, TypeScript, RxJS and algebraic data types.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Purpose
+This game engine (GE) is stateless and responsible for game evaluation, rules and actions.
+To have a complete game, one must have a dealer between the GE and the customer-facing interface.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+The GE do not own this responsibility: authn, authz and persistence, instead it calculates each game step.
 
-## Description
+## Stack
+- NodeJS
+- NestJS
+- TypeScript
+- RxJS: used on game action strategy evaluation to improve readability of the code and possibly adding virtual parallelism if blocking operations were added 
+- Algebraic data types (ADTs): considering that a deck is a Cartesian product, then with the use of ADTs it is possible to add more type safety
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Roadmap
+There is a lot of work to do and I am afraid of the time that I still have considering the holidays that usually took a lot from us.
+So please let me know if, considering there are only enhancements and the GE is working perfectly, if they are necessary to be implemented.
+To know about, please check the [TODO](./TODO.md).
 
-## Installation
+## Testing it
 
-```bash
-$ npm install
+There are unit testing covering the game rules and integration tests partially covering the features:
+- run unit testing: `npm run test`
+- run integration testing: `npm run test:e2e`
+
+## Running it
+
+Before running, it is advisable to verify the [config file](./src/config/configuration.ts).
+
+### dev mode
+```sh
+npm i
+npm run start:dev
 ```
 
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+### docker mode
+```sh
+npm i # optional, but the docker build will use this as cache
+docker build . --tag poker-legends
+docker run --name poker-lengeds -d poker-legends
 ```
 
-## Test
+## Using it
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+1. generate table filled with a deck and two to five hands with five cards
+```sh
+curl --location 'http://127.0.0.1:3000/v1/table' \
+--header 'Content-Type: application/json' \
+--data '{
+    "tableOf": 2
+}'
 ```
 
-## Support
+2. result
+```json lines
+{
+    "hands": [
+        [
+          ...
+        ],
+        [
+         ...
+        ]
+    ],
+    "remainingCards": [
+      ...
+    ]
+}
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+3. let each player discard and draw from one to three cards (one request equals to one rebuy)
+```sh
+curl --location --request PUT 'http://127.0.0.1:3000/v1/table' \
+--header 'Content-Type: application/json' \
+--data '{
+    "action": {
+        "kind": "DISCARD_CARTS",
+        "data": {
+            "discardedCards": [
+                {
+                    "suit": "Clubs",
+                    "rank": {
+                        "kind": "Three",
+                        "value": 1
+                    }
+                },
+                {
+                    "suit": "Clubs",
+                    "rank": {
+                        "kind": "Four",
+                        "value": 2
+                    }
+                }
+            ]
+        }
+    },
+    "hands": [
+        [
+            {
+                "suit": "Diamonds",
+                "rank": {
+                    "kind": "King",
+                    "value": 11
+                }
+            },
+            {
+                "suit": "Hearts",
+                "rank": {
+                    "kind": "King",
+                    "value": 11
+                }
+            },
+            {
+                "suit": "Clubs",
+                "rank": {
+                    "kind": "Three",
+                    "value": 1
+                }
+            },
+            {
+                "suit": "Spades",
+                "rank": {
+                    "kind": "Ace",
+                    "value": 12
+                }
+            },
+            {
+                "suit": "Clubs",
+                "rank": {
+                    "kind": "Four",
+                    "value": 2
+                }
+            }
+        ],
+        [{"suit":"Diamonds","rank":{"kind":"Seven","value":5}},{"suit":"Clubs","rank":{"kind":"Ten","value":8}},
+        {"suit":"Diamonds","rank":{"kind":"Five","value":3}},{"suit":"Hearts","rank":{"kind":"Nine","value":7}},
+        {"suit":"Diamonds","rank":{"kind":"Two","value":0}}]
+    ],
+    "deck": [
+        {"suit":"Spades","rank":{"kind":"Five","value":3}},{"suit":"Hearts","rank":{"kind":"Five","value":3}},
+        {"suit":"Spades","rank":{"kind":"King","value":11}},{"suit":"Spades","rank":{"kind":"Ten","value":8}},
+        {"suit":"Spades","rank":{"kind":"Nine","value":7}},{"suit":"Spades","rank":{"kind":"Three","value":1}},
+        {"suit":"Clubs","rank":{"kind":"Ace","value":12}},{"suit":"Clubs","rank":{"kind":"Nine","value":7}},
+        {"suit":"Hearts","rank":{"kind":"Queen","value":10}},{"suit":"Clubs","rank":{"kind":"Two","value":0}},
+        {"suit":"Diamonds","rank":{"kind":"Ace","value":12}},{"suit":"Hearts","rank":{"kind":"Seven","value":5}},
+        {"suit":"Diamonds","rank":{"kind":"Nine","value":7}},{"suit":"Spades","rank":{"kind":"Jack","value":9}},
+        {"suit":"Clubs","rank":{"kind":"Six","value":4}},{"suit":"Spades","rank":{"kind":"Six","value":4}},
+        {"suit":"Diamonds","rank":{"kind":"Ten","value":8}},{"suit":"Clubs","rank":{"kind":"Queen","value":10}},
+        {"suit":"Spades","rank":{"kind":"Eight","value":6}},{"suit":"Spades","rank":{"kind":"Four","value":2}},
+        {"suit":"Spades","rank":{"kind":"Seven","value":5}},{"suit":"Clubs","rank":{"kind":"Seven","value":5}},
+        {"suit":"Diamonds","rank":{"kind":"Queen","value":10}},{"suit":"Spades","rank":{"kind":"Two","value":0}},
+        {"suit":"Diamonds","rank":{"kind":"Four","value":2}},{"suit":"Clubs","rank":{"kind":"King","value":11}},
+        {"suit":"Hearts","rank":{"kind":"Two","value":0}}
+    ]
+}'
+```
 
-## Stay in touch
+5. result
+```json lines 
+{
+    "hands": [
+        [
+          ...
+        ],
+        [
+           ...
+        ]
+    ],
+    "remainingCards": [
+      ...
+    ],
+    "action": {
+        "kind": "DISCARD_CARTS",
+        "result": {
+            "drawnCards": [
+                {
+                    "suit": "Clubs",
+                    "rank": {
+                        "kind": "King",
+                        "value": 11
+                    }
+                },
+                {
+                    "suit": "Hearts",
+                    "rank": {
+                        "kind": "Two",
+                        "value": 0
+                    }
+                }
+            ]
+        }
+    }
+}
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+5. showdown
+```sh
+curl --location --request PUT 'http://127.0.0.1:3000/v1/table' \
+--header 'Content-Type: application/json' \
+--data '{
+    "action": {
+        "kind": "SHOWDOWN"
+    },
+    "hands": [
+        [
+            {
+                "suit": "Diamonds",
+                "rank": {
+                    "kind": "King",
+                    "value": 11
+                }
+            },
+            {
+                "suit": "Hearts",
+                "rank": {
+                    "kind": "King",
+                    "value": 11
+                }
+            },
+            {
+                "suit": "Spades",
+                "rank": {
+                    "kind": "Ace",
+                    "value": 12
+                }
+            },
+            {
+                "suit": "Clubs",
+                "rank": {
+                    "kind": "King",
+                    "value": 11
+                }
+            },
+            {
+                "suit": "Hearts",
+                "rank": {
+                    "kind": "Two",
+                    "value": 0
+                }
+            }
+        ],
+        [
+            {
+                "suit": "Diamonds",
+                "rank": {
+                    "kind": "Seven",
+                    "value": 5
+                }
+            },
+            {
+                "suit": "Clubs",
+                "rank": {
+                    "kind": "Ten",
+                    "value": 8
+                }
+            },
+            {
+                "suit": "Diamonds",
+                "rank": {
+                    "kind": "Five",
+                    "value": 3
+                }
+            },
+            {
+                "suit": "Hearts",
+                "rank": {
+                    "kind": "Nine",
+                    "value": 7
+                }
+            },
+            {
+                "suit": "Diamonds",
+                "rank": {
+                    "kind": "Two",
+                    "value": 0
+                }
+            }
+        ]
+    ]
+}'
+```
 
-## License
-
-Nest is [MIT licensed](LICENSE).
+6. result
+```json lines
+{
+    "hands": [
+      [
+        ...
+      ],
+      [
+        ...
+      ]
+    ],
+    "action": {
+        "kind": "SHOWDOWN",
+        "result": {
+            "winnerHand": [
+               ...
+            ],
+            "handRanking": {
+                "kind": "ThreeOfAKind",
+                "threeRank": {
+                    "kind": "King",
+                    "value": 11
+                },
+                "kickers": [
+                    {
+                        "suit": "Hearts",
+                        "rank": {
+                            "kind": "Two",
+                            "value": 0
+                        }
+                    },
+                    {
+                        "suit": "Spades",
+                        "rank": {
+                            "kind": "Ace",
+                            "value": 12
+                        }
+                    }
+                ],
+                "value": 3
+            }
+        }
+    }
+}
+```
