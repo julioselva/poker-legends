@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { CardRank, CardRanks } from '../../cards/cards.type';
+import { CardRanks } from '../../cards/cards.type';
 import { HandEntity } from '../../hand/hand.entity';
 import { EmptyHandE } from '../game.error';
 import {
@@ -24,12 +24,15 @@ export class EvaluateHandCommand {
 
 // ---- Result ----
 export class EvaluateHandResult {
-  handRanking: HandRanking;
+  constructor(
+    public readonly hand: Hand,
+    public readonly handRanking: HandRanking,
+  ) {}
 }
 
 @Injectable()
 export class EvaluateHandUseCase {
-  exec(cmd: EvaluateHandCommand): [Hand, HandRanking] {
+  exec(cmd: EvaluateHandCommand): EvaluateHandResult {
     const { hand } = cmd;
 
     if (!hand || !hand.length) {
@@ -52,9 +55,9 @@ export class EvaluateHandUseCase {
     ];
 
     for (const checks of handRankingCheks) {
-      const result = checks(handEntity);
+      const result: HandRanking = checks.call(this, handEntity);
       if (result !== null && result !== undefined) {
-        return [hand, result];
+        return new EvaluateHandResult(hand, result);
       }
     }
   }

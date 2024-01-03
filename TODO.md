@@ -2,11 +2,13 @@
 
 [ ] add error logs on all errors
 [x] add more type safety in update table result using generics
-[ ] add remaining game evaluations
+[x] add remaining game evaluations
 [-] add integration tests
-[ ] add unit tests
+[-] add unit tests
 [ ] improve request/response serialization 
 [ ] add request validation
 [x] refactor table update using strategy 
 [ ] add documentation
 [ ] add player metadata
+[ ] improve game unit tests using the deck to have more flexibility dealing cards
+[ ] improve game unit tests checking other result properties besides the Kind

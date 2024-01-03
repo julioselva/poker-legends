@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { BetterMap } from '../../lib/ts/BetterMap';
 import { Hand, HandRanking, HighCard } from '../game.type';
+import { EvaluateHandResult } from './evaluate-hand.use-case';
 
 // ---- Command ----
 export class EvaluateHandRankingCommand {
@@ -22,8 +23,6 @@ export class EvaluateHandRankingsUseCase {
     const result = this.doRankingEvaluationByCombinations(handsAndRankings);
     const [, handRanking] = result;
 
-    console.log(handRanking);
-
     if (handRanking.kind === 'HighCard')
       return this.doRankingEvaluationByTheHighestCard(handsAndRankings as BetterMap<Hand, HighCard>);
 
@@ -43,9 +42,6 @@ export class EvaluateHandRankingsUseCase {
     return handsAndRankings.reduce((acc, curr) => {
       const [, accHandRanking] = acc;
       const [, currHandRanking] = curr;
-
-      console.log(JSON.stringify(acc));
-      console.log(JSON.stringify(curr));
 
       return accHandRanking.card.rank.value > currHandRanking.card.rank.value ? acc : curr;
     });

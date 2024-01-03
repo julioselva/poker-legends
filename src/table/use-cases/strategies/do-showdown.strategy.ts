@@ -24,7 +24,9 @@ export class DoShowdownStrategy {
     return scheduled(from(hands), asapScheduler).pipe(
       map((hand) => this.evaluateHandUseCase.exec(new EvaluateHandCommand(hand))),
       toArray(),
-      map((result) => new BetterMap<Hand, HandRanking>(...result)),
+      map((result) =>
+        result.reduce((acc, { hand, handRanking }) => acc.set(hand, handRanking), new BetterMap<Hand, HandRanking>()),
+      ),
       map((mapped) => this.evaluateHandRankingsUseCase.exec(new EvaluateHandRankingCommand(mapped))),
       map(([hand, handRanking]) => ({
         hands,

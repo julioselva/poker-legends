@@ -31,7 +31,7 @@ export class BetterMap<K, V> extends Map<K, V> {
     const entries = Array.from(this.entries());
 
     const filterRecursive = (remainingEntries: [K, V][], filteredEntries: [K, V][]): [K, V][] => {
-      if (!remainingEntries.length) filteredEntries;
+      if (!remainingEntries.length) return filteredEntries;
       if (predicate(remainingEntries.at(0)))
         return filterRecursive(remainingEntries.slice(1), [...filteredEntries, remainingEntries.at(0)]);
       return filterRecursive(remainingEntries.slice(1), filteredEntries);
