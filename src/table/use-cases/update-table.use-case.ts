@@ -10,9 +10,9 @@ import { DoShowdownStrategy } from './strategies/do-showdown.strategy';
 // ---- Command ----
 export class UpdateTableCommand<T extends TableActionKind> {
   constructor(
-    public readonly hands: Hand[],
-    public readonly deck: Card[],
     public readonly action: TableAction<T>,
+    public readonly hands: Hand[],
+    public readonly deck?: Card[],
   ) {}
 }
 

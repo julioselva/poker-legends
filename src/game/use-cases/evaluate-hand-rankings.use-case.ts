@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { BetterMap } from '../../lib/ts/BetterMap';
-import { Hand, HandRanking, HighCard } from '../game.type';
-import { EvaluateHandResult } from './evaluate-hand.use-case';
+import { CardRankingPower, Hand, HandRanking, HighCard } from '../game.type';
 
 // ---- Command ----
 export class EvaluateHandRankingCommand {
@@ -43,7 +42,7 @@ export class EvaluateHandRankingsUseCase {
       const [, accHandRanking] = acc;
       const [, currHandRanking] = curr;
 
-      return accHandRanking.card.rank.value > currHandRanking.card.rank.value ? acc : curr;
+      return CardRankingPower[accHandRanking.card.rank] > CardRankingPower[currHandRanking.card.rank] ? acc : curr;
     });
   }
 }

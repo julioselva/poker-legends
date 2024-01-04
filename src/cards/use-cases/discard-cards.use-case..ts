@@ -26,7 +26,6 @@ export class DiscardCardsUseCase {
     const { discardedCards, remainingCards } = cmd;
 
     if (discardedCards.length > 3) throw new DiscardCardsThresholdOverflowE();
-
     if (!remainingCards || remainingCards.length < discardedCards.length) throw new NoMoreCardsLeftE();
 
     return this.drawCards.exec(new DrawCardsCommand(remainingCards, discardedCards.length));

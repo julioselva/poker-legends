@@ -1,13 +1,23 @@
 import { Body, Controller, Post, Put, UseFilters } from '@nestjs/common';
-import { map, Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 
+import { ReducerValidationPipe } from '../lib/nest/reducer-validation.pipe';
 import { TableCreateRequest } from './payloads/http/table-create.request';
 import { TableCreateResponse } from './payloads/http/table-create.response';
-import { TableUpdateRequest } from './payloads/http/table-update.request';
-import { TableUpdateResponse } from './payloads/http/table-update.response';
+import {
+  TableUpdateRequest,
+  TableUpdateRequestDiscardCards,
+  TableUpdateRequestShowdown,
+} from './payloads/http/table-update.request';
+import {
+  TableUpdateResponse,
+  TableUpdateResponseDiscardCards,
+  TableUpdateResponseShowdown,
+} from './payloads/http/table-update.response';
 import { TableEFilter } from './table.filter';
+import { TableActionKind } from './table.type';
 import { CreateTableUseCase } from './use-cases/create-table.use-case';
-import { UpdateTableUseCase } from './use-cases/update-table.use-case';
+import { UpdateTableResult, UpdateTableUseCase } from './use-cases/update-table.use-case';
 
 @UseFilters(TableEFilter)
 @Controller('table')
@@ -24,7 +34,19 @@ export class TableController {
   }
 
   @Put()
-  update(@Body() body: TableUpdateRequest): Observable<TableUpdateResponse> {
-    return this.updateTableUseCase.exec(body.toCommand()).pipe(map((result) => new TableUpdateResponse(result)));
+  update(
+    @Body(new ReducerValidationPipe([TableUpdateRequestDiscardCards, TableUpdateRequestShowdown], { transform: true }))
+    body: TableUpdateRequest,
+  ): Observable<TableUpdateResponse> {
+    return this.updateTableUseCase.exec(body.toCommand()).pipe(
+      map((result) => {
+        switch (result.action.kind) {
+          case TableActionKind.DiscardCards:
+            return new TableUpdateResponseDiscardCards(result as UpdateTableResult<TableActionKind.DiscardCards>);
+          case TableActionKind.Showdown:
+            return new TableUpdateResponseShowdown(result as UpdateTableResult<TableActionKind.Showdown>);
+        }
+      }),
+    );
   }
 }

@@ -100,7 +100,7 @@ describe('Table/CreateTable', () => {
     });
   });
 
-  describe.only('should be caught by the exception filter', () => {
+  describe('should be caught by the exception filter', () => {
     it(`POST => /v1/table`, () => {
       jest.spyOn(app.get<CreateTableUseCase>(CreateTableUseCase), 'exec').mockImplementation(() => {
         throw new NotEnoughPlayersE();

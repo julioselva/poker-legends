@@ -7,6 +7,7 @@ import { CreateTableResult } from '../../use-cases/create-table.use-case';
 export class TableCreateResponse {
   @Expose()
   hands: Hand[];
+
   @Expose()
   remainingCards: Card[];
 

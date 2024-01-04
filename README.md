@@ -1,5 +1,5 @@
 # POKER LEGENDS
-A 52-cards poker game engine statless and buit with NodeJS, NestJS, TypeScript, RxJS and algebraic data types.
+A 52-cards poker statless game engine buit with NodeJS, NestJS, TypeScript, RxJS and algebraic data types.
 
 ## Purpose
 This game engine (GE) is stateless and responsible for game evaluation, rules and actions.
@@ -80,79 +80,44 @@ curl --location --request PUT 'http://127.0.0.1:3000/v1/table' \
         "data": {
             "discardedCards": [
                 {
-                    "suit": "Clubs",
-                    "rank": {
-                        "kind": "Three",
-                        "value": 1
-                    }
+                    "suit": "Spades",
+                    "rank": "Six"
                 },
                 {
-                    "suit": "Clubs",
-                    "rank": {
-                        "kind": "Four",
-                        "value": 2
-                    }
+                    "suit": "Diamonds",
+                    "rank": "Two"
                 }
             ]
         }
     },
     "hands": [
         [
-            {
-                "suit": "Diamonds",
-                "rank": {
-                    "kind": "King",
-                    "value": 11
-                }
-            },
-            {
-                "suit": "Hearts",
-                "rank": {
-                    "kind": "King",
-                    "value": 11
-                }
-            },
-            {
-                "suit": "Clubs",
-                "rank": {
-                    "kind": "Three",
-                    "value": 1
-                }
-            },
-            {
-                "suit": "Spades",
-                "rank": {
-                    "kind": "Ace",
-                    "value": 12
-                }
-            },
-            {
-                "suit": "Clubs",
-                "rank": {
-                    "kind": "Four",
-                    "value": 2
-                }
-            }
+            { "suit":"Hearts","rank":"Queen"},
+            { "suit":"Spades","rank":"Six"},
+            { "suit":"Diamonds","rank":"Two"},
+            { "suit":"Hearts","rank":"Jack"},
+            { "suit":"Hearts","rank":"Ten"}
         ],
-        [{"suit":"Diamonds","rank":{"kind":"Seven","value":5}},{"suit":"Clubs","rank":{"kind":"Ten","value":8}},
-        {"suit":"Diamonds","rank":{"kind":"Five","value":3}},{"suit":"Hearts","rank":{"kind":"Nine","value":7}},
-        {"suit":"Diamonds","rank":{"kind":"Two","value":0}}]
+        [
+            {"suit":"Diamonds","rank":"Nine"},
+            {"suit":"Diamonds","rank":"Ace"},
+            {"suit":"Diamonds","rank":"Four"},
+            {"suit":"Spades","rank":"Four"},
+            {"suit":"Hearts","rank":"Two"}
+        ]
     ],
-    "deck": [
-        {"suit":"Spades","rank":{"kind":"Five","value":3}},{"suit":"Hearts","rank":{"kind":"Five","value":3}},
-        {"suit":"Spades","rank":{"kind":"King","value":11}},{"suit":"Spades","rank":{"kind":"Ten","value":8}},
-        {"suit":"Spades","rank":{"kind":"Nine","value":7}},{"suit":"Spades","rank":{"kind":"Three","value":1}},
-        {"suit":"Clubs","rank":{"kind":"Ace","value":12}},{"suit":"Clubs","rank":{"kind":"Nine","value":7}},
-        {"suit":"Hearts","rank":{"kind":"Queen","value":10}},{"suit":"Clubs","rank":{"kind":"Two","value":0}},
-        {"suit":"Diamonds","rank":{"kind":"Ace","value":12}},{"suit":"Hearts","rank":{"kind":"Seven","value":5}},
-        {"suit":"Diamonds","rank":{"kind":"Nine","value":7}},{"suit":"Spades","rank":{"kind":"Jack","value":9}},
-        {"suit":"Clubs","rank":{"kind":"Six","value":4}},{"suit":"Spades","rank":{"kind":"Six","value":4}},
-        {"suit":"Diamonds","rank":{"kind":"Ten","value":8}},{"suit":"Clubs","rank":{"kind":"Queen","value":10}},
-        {"suit":"Spades","rank":{"kind":"Eight","value":6}},{"suit":"Spades","rank":{"kind":"Four","value":2}},
-        {"suit":"Spades","rank":{"kind":"Seven","value":5}},{"suit":"Clubs","rank":{"kind":"Seven","value":5}},
-        {"suit":"Diamonds","rank":{"kind":"Queen","value":10}},{"suit":"Spades","rank":{"kind":"Two","value":0}},
-        {"suit":"Diamonds","rank":{"kind":"Four","value":2}},{"suit":"Clubs","rank":{"kind":"King","value":11}},
-        {"suit":"Hearts","rank":{"kind":"Two","value":0}}
+    "deck":[
+        {"suit":"Clubs","rank":"Seven"},{"suit":"Diamonds","rank":"Eight"},
+        {"suit":"Clubs","rank":"Four"},{"suit":"Diamonds","rank":"Five"},{"suit":"Spades","rank":"King"},{"suit":"Clubs","rank":"Three"},
+        {"suit":"Hearts","rank":"Nine"},{"suit":"Diamonds","rank":"Six"},{"suit":"Hearts","rank":"Six"},{"suit":"Hearts","rank":"King"},
+        {"suit":"Hearts","rank":"Three"},{"suit":"Diamonds","rank":"Queen"},{"suit":"Hearts","rank":"Four"},{"suit":"Hearts","rank":"Five"},
+        {"suit":"Spades","rank":"Ace"},{"suit":"Clubs","rank":"Ace"},{"suit":"Clubs","rank":"Eight"},{"suit":"Clubs","rank":"Nine"},
+        {"suit":"Clubs","rank":"Five"},{"suit":"Clubs","rank":"Ten"},{"suit":"Hearts","rank":"Seven"},{"suit":"Clubs","rank":"Six"},
+        {"suit":"Clubs","rank":"King"},{"suit":"Clubs","rank":"Two"},{"suit":"Spades","rank":"Jack"},{"suit":"Spades","rank":"Two"},
+        {"suit":"Diamonds","rank":"Seven"},{"suit":"Spades","rank":"Ten"},{"suit":"Spades","rank":"Seven"},{"suit":"Hearts","rank":"Eight"},
+        {"suit":"Diamonds","rank":"Three"},{"suit":"Spades","rank":"Queen"},{"suit":"Hearts","rank":"Ace"},{"suit":"Diamonds","rank":"Ten"},
+        {"suit":"Diamonds","rank":"Jack"},{"suit":"Spades","rank":"Five"},{"suit":"Spades","rank":"Nine"},{"suit":"Clubs","rank":"Queen"},
+        {"suit":"Diamonds","rank":"King"},{"suit":"Clubs","rank":"Jack"},{"suit":"Spades","rank":"Eight"},{"suit":"Spades","rank":"Three"}
     ]
 }'
 ```
@@ -160,38 +125,32 @@ curl --location --request PUT 'http://127.0.0.1:3000/v1/table' \
 5. result
 ```json lines 
 {
-    "hands": [
-        [
-          ...
-        ],
-        [
-           ...
-        ]
-    ],
-    "remainingCards": [
+  "hands": [
+    [
       ...
     ],
-    "action": {
-        "kind": "DISCARD_CARTS",
-        "result": {
-            "drawnCards": [
-                {
-                    "suit": "Clubs",
-                    "rank": {
-                        "kind": "King",
-                        "value": 11
-                    }
-                },
-                {
-                    "suit": "Hearts",
-                    "rank": {
-                        "kind": "Two",
-                        "value": 0
-                    }
-                }
-            ]
+    [
+      ...
+    ]
+  ],
+  "remainingCards": [
+    ...
+  ],
+  "action": {
+    "kind": "DISCARD_CARTS",
+    "result": {
+      "drawnCards": [
+        {
+          "suit": "Spades",
+          "rank": "Eight"
+        },
+        {
+          "suit": "Spades",
+          "rank": "Three"
         }
+      ]
     }
+  }
 }
 ```
 
@@ -201,81 +160,99 @@ curl --location --request PUT 'http://127.0.0.1:3000/v1/table' \
 --header 'Content-Type: application/json' \
 --data '{
     "action": {
-        "kind": "SHOWDOWN"
+        "kind": "SHOWDOWN",
+        "data": {
+            "hands": [
+                [
+                    {
+                        "suit": "Hearts",
+                        "rank": "Queen"
+                    },
+                    {
+                        "suit": "Hearts",
+                        "rank": "Jack"
+                    },
+                    {
+                        "suit": "Hearts",
+                        "rank": "Ten"
+                    },
+                    {
+                        "suit": "Spades",
+                        "rank": "Eight"
+                    },
+                    {
+                        "suit": "Spades",
+                        "rank": "Three"
+                    }
+                ],
+                [
+                    {
+                        "suit": "Diamonds",
+                        "rank": "Nine"
+                    },
+                    {
+                        "suit": "Diamonds",
+                        "rank": "Ace"
+                    },
+                    {
+                        "suit": "Diamonds",
+                        "rank": "Four"
+                    },
+                    {
+                        "suit": "Spades",
+                        "rank": "Four"
+                    },
+                    {
+                        "suit": "Hearts",
+                        "rank": "Two"
+                    }
+                ]
+            ]
+        }
     },
     "hands": [
         [
             {
-                "suit": "Diamonds",
-                "rank": {
-                    "kind": "King",
-                    "value": 11
-                }
+                "suit": "Hearts",
+                "rank": "Queen"
             },
             {
                 "suit": "Hearts",
-                "rank": {
-                    "kind": "King",
-                    "value": 11
-                }
+                "rank": "Jack"
+            },
+            {
+                "suit": "Hearts",
+                "rank": "Ten"
             },
             {
                 "suit": "Spades",
-                "rank": {
-                    "kind": "Ace",
-                    "value": 12
-                }
+                "rank": "Eight"
             },
             {
-                "suit": "Clubs",
-                "rank": {
-                    "kind": "King",
-                    "value": 11
-                }
-            },
-            {
-                "suit": "Hearts",
-                "rank": {
-                    "kind": "Two",
-                    "value": 0
-                }
+                "suit": "Spades",
+                "rank": "Three"
             }
         ],
         [
             {
                 "suit": "Diamonds",
-                "rank": {
-                    "kind": "Seven",
-                    "value": 5
-                }
-            },
-            {
-                "suit": "Clubs",
-                "rank": {
-                    "kind": "Ten",
-                    "value": 8
-                }
+                "rank": "Nine"
             },
             {
                 "suit": "Diamonds",
-                "rank": {
-                    "kind": "Five",
-                    "value": 3
-                }
+                "rank": "Ace"
+            },
+            {
+                "suit": "Diamonds",
+                "rank": "Four"
+            },
+            {
+                "suit": "Spades",
+                "rank": "Four"
             },
             {
                 "suit": "Hearts",
-                "rank": {
-                    "kind": "Nine",
-                    "value": 7
-                }
-            },
-            {
-                "suit": "Diamonds",
-                "rank": {
-                    "kind": "Two",
-                    "value": 0
-                }
+                "rank": "Two"
             }
         ]
     ]
@@ -286,42 +263,56 @@ curl --location --request PUT 'http://127.0.0.1:3000/v1/table' \
 ```json lines
 {
     "hands": [
-      [
-        ...
-      ],
-      [
-        ...
-      ]
+        [
+            ...
+        ],
+        [
+           ...
+        ]
     ],
     "action": {
         "kind": "SHOWDOWN",
         "result": {
             "winnerHand": [
-               ...
+                {
+                    "suit": "Diamonds",
+                    "rank": "Nine"
+                },
+                {
+                    "suit": "Diamonds",
+                    "rank": "Ace"
+                },
+                {
+                    "suit": "Diamonds",
+                    "rank": "Four"
+                },
+                {
+                    "suit": "Spades",
+                    "rank": "Four"
+                },
+                {
+                    "suit": "Hearts",
+                    "rank": "Two"
+                }
             ],
             "handRanking": {
-                "kind": "ThreeOfAKind",
-                "threeRank": {
-                    "kind": "King",
-                    "value": 11
-                },
+                "kind": "OnePair",
+                "pairRank": "Four",
                 "kickers": [
                     {
                         "suit": "Hearts",
-                        "rank": {
-                            "kind": "Two",
-                            "value": 0
-                        }
+                        "rank": "Two"
                     },
                     {
-                        "suit": "Spades",
-                        "rank": {
-                            "kind": "Ace",
-                            "value": 12
-                        }
+                        "suit": "Diamonds",
+                        "rank": "Nine"
+                    },
+                    {
+                        "suit": "Diamonds",
+                        "rank": "Ace"
                     }
                 ],
-                "value": 3
+                "value": 1
             }
         }
     }

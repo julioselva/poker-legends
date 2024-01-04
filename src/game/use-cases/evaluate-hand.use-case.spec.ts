@@ -1,6 +1,6 @@
 import { Card, CardRank, CardRanks, CardSuit, CardSuits } from '../../cards/cards.type';
 import { HandEntity } from '../../hand/hand.entity';
-import { Hand } from '../game.type';
+import { CardRankingPower, Hand } from '../game.type';
 import { EvaluateHandCommand, EvaluateHandUseCase } from './evaluate-hand.use-case';
 
 describe('EvaluateHandUseCase', () => {
@@ -131,14 +131,21 @@ function generateRandomCard(
   let filteredDeck: Card[] = shuffleHand(deck);
 
   if (includeThisRank.length)
-    filteredDeck = filteredDeck.filter((card) => includeThisRank.some((cr) => cr.value === card.rank.value));
+    filteredDeck = filteredDeck.filter((card) =>
+      includeThisRank.some((cr) => CardRankingPower[cr] === CardRankingPower[card.rank]),
+    );
 
   if (includeThisSuit.length)
     filteredDeck = filteredDeck.filter((card) => includeThisSuit.some((cs) => cs === card.suit));
 
   filteredDeck = filteredDeck
-    .filter((card) => !skipTheseCards.some((sc) => sc.rank.value === card.rank.value && card.suit === sc.suit))
-    .filter((card) => !skipTheseRanks.some((cr) => cr.value === card.rank.value))
+    .filter(
+      (card) =>
+        !skipTheseCards.some(
+          (sc) => CardRankingPower[sc.rank] === CardRankingPower[card.rank] && card.suit === sc.suit,
+        ),
+    )
+    .filter((card) => !skipTheseRanks.some((cr) => CardRankingPower[cr] === CardRankingPower[card.rank]))
     .filter((card) => !skipTheseSuits.some((cs) => cs === card.suit));
 
   return filteredDeck.at(-1);
@@ -161,10 +168,22 @@ function generateStraightFlush(): Hand {
   const seedRank: CardRank = CardRanks[Math.floor(Math.random() * 9)];
 
   const first: Card = { suit: seedSuit, rank: seedRank };
-  const second: Card = { suit: seedSuit, rank: CardRanks.find((cr) => cr.value === seedRank.value + 1) };
-  const third: Card = { suit: seedSuit, rank: CardRanks.find((cr) => cr.value === seedRank.value + 2) };
-  const fourth: Card = { suit: seedSuit, rank: CardRanks.find((cr) => cr.value === seedRank.value + 3) };
-  const fifth: Card = { suit: seedSuit, rank: CardRanks.find((cr) => cr.value === seedRank.value + 4) };
+  const second: Card = {
+    suit: seedSuit,
+    rank: CardRanks.find((cr) => CardRankingPower[cr] === CardRankingPower[seedRank] + 1),
+  };
+  const third: Card = {
+    suit: seedSuit,
+    rank: CardRanks.find((cr) => CardRankingPower[cr] === CardRankingPower[seedRank] + 2),
+  };
+  const fourth: Card = {
+    suit: seedSuit,
+    rank: CardRanks.find((cr) => CardRankingPower[cr] === CardRankingPower[seedRank] + 3),
+  };
+  const fifth: Card = {
+    suit: seedSuit,
+    rank: CardRanks.find((cr) => CardRankingPower[cr] === CardRankingPower[seedRank] + 4),
+  };
 
   return shuffleHand([first, second, third, fourth, fifth]);
 }
@@ -186,7 +205,9 @@ function generateFullHouse(): Hand {
   const fistPairSuit: CardSuit = CardSuits[Math.floor(Math.random() * 4)];
   const secondPairSuit: CardSuit = CardSuits.filter((cs) => cs !== fistPairSuit)[Math.random() * 3];
 
-  const threeRank: CardRank = CardRanks.filter((cr) => cr.value !== pairRank.value)[Math.floor(Math.random() * 12)];
+  const threeRank: CardRank = CardRanks.filter((cr) => CardRankingPower[cr] !== CardRankingPower[pairRank])[
+    Math.floor(Math.random() * 12)
+  ];
   const firstThreeSuit: CardSuit = CardSuits[Math.floor(Math.random() * 4)];
   const secondThreeSuit: CardSuit = CardSuits.filter((cs) => cs !== firstThreeSuit)[Math.random() * 3];
   const thirdThreeSuit: CardSuit = CardSuits.filter((cs) => cs !== firstThreeSuit && cs !== secondThreeSuit)[
@@ -233,10 +254,22 @@ function generateStraight(): Hand {
   ];
 
   const first: Card = { suit: firstSuit, rank: seedRank };
-  const second: Card = { suit: secondSuit, rank: CardRanks.find((cr) => cr.value === seedRank.value + 1) };
-  const third: Card = { suit: thirdSuit, rank: CardRanks.find((cr) => cr.value === seedRank.value + 2) };
-  const fourth: Card = { suit: fourthAndFifthSuit, rank: CardRanks.find((cr) => cr.value === seedRank.value + 3) };
-  const fifth: Card = { suit: fourthAndFifthSuit, rank: CardRanks.find((cr) => cr.value === seedRank.value + 4) };
+  const second: Card = {
+    suit: secondSuit,
+    rank: CardRanks.find((cr) => CardRankingPower[cr] === CardRankingPower[seedRank] + 1),
+  };
+  const third: Card = {
+    suit: thirdSuit,
+    rank: CardRanks.find((cr) => CardRankingPower[cr] === CardRankingPower[seedRank] + 2),
+  };
+  const fourth: Card = {
+    suit: fourthAndFifthSuit,
+    rank: CardRanks.find((cr) => CardRankingPower[cr] === CardRankingPower[seedRank] + 3),
+  };
+  const fifth: Card = {
+    suit: fourthAndFifthSuit,
+    rank: CardRanks.find((cr) => CardRankingPower[cr] === CardRankingPower[seedRank] + 4),
+  };
 
   return shuffleHand([first, second, third, fourth, fifth]);
 }
@@ -278,15 +311,27 @@ function generateOnePair(): Card[] {
 }
 
 function generateHighCard(): Card[] {
-  const first: Card = generateRandomCard();
-  const second: Card = generateRandomCard([first], [first.rank], [first.suit]);
-  const third: Card = generateRandomCard([first, second], [first.rank, second.rank], [first.suit]);
-  const fourth: Card = generateRandomCard([first, second, third], [first.rank, second.rank, third.rank], [first.suit]);
-  const fifth: Card = generateRandomCard(
-    [first, second, third, fourth],
-    [first.rank, second.rank, third.rank, fourth.rank],
-    [first.suit],
-  );
+  const handEntity = new HandEntity();
 
-  return shuffleHand([first, second, third, fourth, fifth]);
+  do {
+    const first: Card = generateRandomCard();
+    const second: Card = generateRandomCard([first], [first.rank], [first.suit]);
+    const third: Card = generateRandomCard([first, second], [first.rank, second.rank], [first.suit]);
+    const fourth: Card = generateRandomCard(
+      [first, second, third],
+      [first.rank, second.rank, third.rank],
+      [first.suit],
+    );
+
+    const fifth: Card = generateRandomCard(
+      [first, second, third, fourth],
+      [first.rank, second.rank, third.rank, fourth.rank],
+      [first.suit],
+    );
+
+    handEntity.length = 0;
+    handEntity.push(first, second, third, fourth, fifth);
+  } while (handEntity.handSort().handHasSequence());
+
+  return shuffleHand(handEntity);
 }

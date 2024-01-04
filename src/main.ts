@@ -25,7 +25,7 @@ async function bootstrap() {
   app.useLogger(app.get(Logger));
   app.setGlobalPrefix(root);
   app.useGlobalInterceptors(new LoggerErrorInterceptor(), new ClassSerializerInterceptor(new Reflector()));
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.enableCors({ origin: '*' });
 
   const logger = new Writer('bootstrap');

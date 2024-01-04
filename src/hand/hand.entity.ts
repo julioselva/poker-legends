@@ -1,9 +1,10 @@
 import { Card, CardRank } from '../cards/cards.type';
+import { CardRankingPower } from '../game/game.type';
 import { BetterMap } from '../lib/ts/BetterMap';
 
 export class HandEntity extends Array<Card> {
   findHighestRank(): CardRank {
-    return this.reduce((acc, card) => (card.rank.value > acc.value ? card.rank : acc), { kind: 'Two', value: 0 });
+    return this.reduce((acc, card) => (CardRankingPower[card.rank] > CardRankingPower[acc] ? card.rank : acc), 'Two');
   }
 
   handHasSameSuit(): boolean {
@@ -13,7 +14,7 @@ export class HandEntity extends Array<Card> {
   handHasSequence(): boolean {
     const handHasSequenceRecursive = (remainingHand: Card[], currentCard: Card): boolean => {
       if (remainingHand.length === 0) return true;
-      if (remainingHand.at(0).rank.value === currentCard.rank.value + 1)
+      if (CardRankingPower[remainingHand.at(0).rank] === CardRankingPower[currentCard.rank] + 1)
         return handHasSequenceRecursive(remainingHand.slice(1), remainingHand.at(0));
 
       return false;
@@ -23,7 +24,7 @@ export class HandEntity extends Array<Card> {
   }
 
   handSort(): this {
-    return this.sort((a, b) => a.rank.value - b.rank.value);
+    return this.sort((a, b) => CardRankingPower[a.rank] - CardRankingPower[b.rank]);
   }
 
   private _cachedMappedMatches: BetterMap<string, number> = undefined;
@@ -45,7 +46,7 @@ export class HandEntity extends Array<Card> {
     );
 
     for (const { rank } of this) {
-      ranksAndMatchesMap.set(rank.kind, ranksAndMatchesMap.get(rank.kind) + 1);
+      ranksAndMatchesMap.set(rank, ranksAndMatchesMap.get(rank) + 1);
     }
 
     return ranksAndMatchesMap;

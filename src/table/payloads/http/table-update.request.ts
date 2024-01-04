@@ -1,19 +1,101 @@
-import { Allow } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsString, Matches, ValidateNested } from 'class-validator';
 
-import { Card } from '../../../cards/cards.type';
-import { Hand } from '../../../game/game.type';
-import { TableAction, TableActionKind } from '../../table.type';
+import { TableActionKind } from '../../table.type';
 import { UpdateTableCommand } from '../../use-cases/update-table.use-case';
+import { TableUpdateRequestCard } from './common-validations';
 
-export class TableUpdateRequest {
-  @Allow()
-  hands: Hand[];
-  @Allow()
-  deck: Card[];
-  @Allow()
-  action: TableAction<TableActionKind>;
+// ---- Common ----
 
-  toCommand(): UpdateTableCommand<TableActionKind> {
-    return new UpdateTableCommand(this.hands, this.deck, this.action);
+// ---- Request ----
+export interface TableUpdateRequest {
+  action: { kind: TableActionKind };
+  toCommand(): UpdateTableCommand<TableActionKind>;
+}
+
+// ---- DiscardCards ----
+export class TableUpdateRequestActionDiscardCardsData {
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(3)
+  @ValidateNested({ each: true })
+  @Type(() => TableUpdateRequestCard)
+  discardedCards: TableUpdateRequestCard[];
+}
+
+export class TableUpdateRequestActionDiscardCards {
+  @IsString()
+  @Matches(new RegExp(`^${TableActionKind.DiscardCards}$`))
+  kind: TableActionKind.DiscardCards;
+
+  @ValidateNested()
+  @Type(() => TableUpdateRequestActionDiscardCardsData)
+  data: TableUpdateRequestActionDiscardCardsData;
+}
+
+export class TableUpdateRequestDiscardCards implements TableUpdateRequest {
+  @ValidateNested()
+  @Type(() => TableUpdateRequestActionDiscardCards)
+  action: TableUpdateRequestActionDiscardCards;
+
+  @IsArray()
+  @ArrayMinSize(2)
+  @ArrayMaxSize(5)
+  @ArrayMinSize(5, { each: true })
+  @ArrayMaxSize(5, { each: true })
+  @ValidateNested({ each: true })
+  @Type(() => TableUpdateRequestCard)
+  hands: TableUpdateRequestCard[][];
+
+  @IsArray()
+  @ArrayMinSize(0)
+  @ArrayMaxSize(42)
+  @ValidateNested({ each: true })
+  @Type(() => TableUpdateRequestCard)
+  deck: TableUpdateRequestCard[];
+
+  toCommand(): UpdateTableCommand<TableActionKind.DiscardCards> {
+    return new UpdateTableCommand(this.action, this.hands, this.deck);
+  }
+}
+
+// ---- Showdown ----
+export class TableUpdateRequestActionShowdownData {
+  @IsArray()
+  @ArrayMinSize(2)
+  @ArrayMaxSize(5)
+  @ArrayMinSize(5, { each: true })
+  @ArrayMaxSize(5, { each: true })
+  @ValidateNested({ each: true })
+  @Type(() => TableUpdateRequestCard)
+  hands: TableUpdateRequestCard[][];
+}
+
+export class TableUpdateRequestActionShowdown {
+  @IsString()
+  @Matches(new RegExp(`^${TableActionKind.Showdown}$`))
+  kind: TableActionKind.Showdown;
+
+  @ValidateNested()
+  @Type(() => TableUpdateRequestActionShowdownData)
+  data: TableUpdateRequestActionShowdownData;
+}
+
+export class TableUpdateRequestShowdown {
+  @ValidateNested()
+  @Type(() => TableUpdateRequestActionShowdown)
+  action: TableUpdateRequestActionShowdown;
+
+  @IsArray()
+  @ArrayMinSize(2)
+  @ArrayMaxSize(5)
+  @ArrayMinSize(5, { each: true })
+  @ArrayMaxSize(5, { each: true })
+  @ValidateNested({ each: true })
+  @Type(() => TableUpdateRequestCard)
+  hands: TableUpdateRequestCard[][];
+
+  toCommand(): UpdateTableCommand<TableActionKind.Showdown> {
+    return new UpdateTableCommand(this.action, this.hands);
   }
 }

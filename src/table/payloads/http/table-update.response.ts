@@ -5,15 +5,33 @@ import { Hand } from '../../../game/game.type';
 import { TableActionKind, TableActionResult } from '../../table.type';
 import { UpdateTableResult } from '../../use-cases/update-table.use-case';
 
-export class TableUpdateResponse {
+// ---- Response ----
+export interface TableUpdateResponse {
+  action: { kind: TableActionKind };
+}
+
+// ---- Discard Cards ----
+export class TableUpdateResponseDiscardCards implements TableUpdateResponse {
   @Expose()
   hands: Hand[];
+
   @Expose()
   remainingCards: Card[];
-  @Expose()
-  result: TableActionResult<TableActionKind>;
 
-  constructor(partial: Partial<UpdateTableResult<TableActionKind>>) {
+  @Expose()
+  action: TableActionResult<TableActionKind.DiscardCards>;
+
+  constructor(partial: Partial<UpdateTableResult<TableActionKind.DiscardCards>>) {
+    Object.assign(this, partial);
+  }
+}
+
+// ---- Showdown ----
+export class TableUpdateResponseShowdown implements TableUpdateResponse {
+  @Expose()
+  action: TableActionResult<TableActionKind.Showdown>;
+
+  constructor(partial: Partial<UpdateTableResult<TableActionKind.Showdown>>) {
     Object.assign(this, partial);
   }
 }

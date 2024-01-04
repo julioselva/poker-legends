@@ -4,6 +4,7 @@ import { CardRanks } from '../../cards/cards.type';
 import { HandEntity } from '../../hand/hand.entity';
 import { EmptyHandE } from '../game.error';
 import {
+  CardRankingPower,
   Flush,
   FourOfAKind,
   FullHouse,
@@ -83,8 +84,8 @@ export class EvaluateHandUseCase {
 
       return {
         kind: 'FourOfAKind',
-        fourRank: CardRanks.find((cr) => cr.kind === maybeCardRankKind),
-        kicker: CardRanks.find((cr) => cr.kind === kicker),
+        fourRank: CardRanks.find((cr) => cr === maybeCardRankKind),
+        kicker: CardRanks.find((cr) => cr === kicker),
         value: 7,
       };
     }
@@ -138,11 +139,11 @@ export class EvaluateHandUseCase {
     const [maybeCardRankKind] = mappedMatches.find(([, amount]) => amount === 3);
 
     if (maybeCardRankKind) {
-      const kickers = hand.filter((card) => card.rank.kind !== maybeCardRankKind);
+      const kickers = hand.filter((card) => card.rank !== maybeCardRankKind);
 
       return {
         kind: 'ThreeOfAKind',
-        threeRank: CardRanks.find((cr) => cr.kind === maybeCardRankKind),
+        threeRank: CardRanks.find((cr) => cr === maybeCardRankKind),
         kickers,
         value: 3,
       };
@@ -157,13 +158,13 @@ export class EvaluateHandUseCase {
     const [maybeFirstPair, maybeSecondPair] = mappedMatches.filter(([, amount]) => amount === 2);
 
     if (maybeFirstPair && maybeSecondPair) {
-      const firstRank = CardRanks.find((cr) => cr.kind === maybeFirstPair.at(0));
-      const secondRank = CardRanks.find((cr) => cr.kind === maybeSecondPair.at(0));
+      const firstRank = CardRanks.find((cr) => cr === maybeFirstPair.at(0));
+      const secondRank = CardRanks.find((cr) => cr === maybeSecondPair.at(0));
 
       const [highPairRank, lowPairRank] =
-        firstRank.value > secondRank.value ? [firstRank, secondRank] : [secondRank, firstRank];
+        CardRankingPower[firstRank] > CardRankingPower[secondRank] ? [firstRank, secondRank] : [secondRank, firstRank];
 
-      const kicker = hand.find((card) => card.rank.kind !== firstRank.kind && card.rank.kind !== secondRank.kind);
+      const kicker = hand.find((card) => card.rank !== firstRank && card.rank !== secondRank);
 
       return {
         kind: 'TwoPair',
@@ -183,11 +184,11 @@ export class EvaluateHandUseCase {
     const [maybeCardRankKind] = mappedMatches.find(([, amount]) => amount === 2);
 
     if (maybeCardRankKind) {
-      const kickers = hand.filter((card) => card.rank.kind !== maybeCardRankKind);
+      const kickers = hand.filter((card) => card.rank !== maybeCardRankKind);
 
       return {
         kind: 'OnePair',
-        pairRank: CardRanks.find((cr) => cr.kind === maybeCardRankKind),
+        pairRank: CardRanks.find((cr) => cr === maybeCardRankKind),
         kickers,
         value: 1,
       };

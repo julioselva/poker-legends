@@ -2,6 +2,7 @@ import { Card, CardRank, CardSuit } from '../cards/cards.type';
 
 export type Hand = Card[];
 
+// ---- Hand Ranking ----
 export type HighCard = {
   kind: 'HighCard';
   card: Card;
@@ -74,3 +75,20 @@ export type HandRanking =
   | FullHouse
   | FourOfAKind
   | StraightFlush;
+
+// ---- Ranking Values -----
+export enum CardRankingPower {
+  Two = 0,
+  Three = 1,
+  Four = 2,
+  Five = 3,
+  Six = 4,
+  Seven = 5,
+  Eight = 6,
+  Nine = 7,
+  Ten = 8,
+  Jack = 9,
+  Queen = 10,
+  King = 11,
+  Ace = 12,
+}
