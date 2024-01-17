@@ -17,6 +17,13 @@ The GE do not own this responsibility: authn, authz and persistence, instead it 
 ## Roadmap
 The game engine is working perfectly, but still has a lot of work [TODO](./TODO.md).
 
+## Make
+
+There is a [Makefile](./Makefile) for convenience containing a few commands to assist you. You may check them running:
+```sh
+make help
+```
+
 ## Testing it
 
 There are unit testing covering the game rules and integration tests partially covering the features:
