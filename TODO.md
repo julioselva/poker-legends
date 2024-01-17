@@ -6,7 +6,8 @@
 - [x] add integration tests for create table
 - [ ] add integration tests for discarded cards
 - [ ] add integration tests for showdown
-- [x] add unit tests
+- [x] add unit tests for hand evaluation
+- [ ] add unit tests for hand ranking evaluation
 - [x] improve request/response serialization 
 - [x] add request validation
 - [x] refactor table update using strategy 
