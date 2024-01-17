@@ -15,7 +15,6 @@ import { TableModule } from './table/table.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
     PinoLoggerModule.forRootAsync({
-      providers: undefined,
       imports: [LoggerModule],
       inject: [LoggerOptions],
       useFactory: (loggerOptions: LoggerOptions) => loggerOptions.make(),

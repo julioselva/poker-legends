@@ -15,9 +15,7 @@ The GE do not own this responsibility: authn, authz and persistence, instead it 
 - Algebraic data types (ADTs): considering that a deck is a Cartesian product, then with the use of ADTs it is possible to add more type safety
 
 ## Roadmap
-There is a lot of work to do and I am afraid of the time that I still have considering the holidays that usually took a lot from us.
-So please let me know if, considering there are only enhancements and the GE is working perfectly, if they are necessary to be implemented.
-To know about it, please check the [TODO](./TODO.md).
+The game engine is working perfectly, but still has a lot of work [TODO](./TODO.md).
 
 ## Testing it
 
