@@ -1,9 +1,9 @@
 # POKER LEGENDS
-A 52-cards poker statless game engine buit with NodeJS, NestJS, TypeScript, RxJS and algebraic data types.
+A 52-card poker stateless game engine built with NodeJS, NestJS, TypeScript, RxJS, and algebraic data types.
 
 ## Purpose
-This game engine (GE) is stateless and responsible for game evaluation, rules and actions.
-To have a complete game, one must have a dealer between the GE and the customer-facing interface.
+This game engine (GE) is stateless and responsible for game evaluation, rules, and actions.
+To have a complete game, a dealer must be between the GE and the customer-facing interface.
 
 The GE do not own this responsibility: authn, authz and persistence, instead it calculates each game step.
 
@@ -11,11 +11,11 @@ The GE do not own this responsibility: authn, authz and persistence, instead it 
 - NodeJS
 - NestJS
 - TypeScript
-- RxJS: used on game action strategy evaluation to improve readability of the code and possibly adding virtual parallelism if blocking operations were added 
-- Algebraic data types (ADTs): considering that a deck is a Cartesian product, then with the use of ADTs it is possible to add more type safety
+- RxJS: used on game action strategy evaluation to improve the readability of the code and possibly add virtual parallelism if blocking operations were added 
+- Algebraic data types (ADTs): considering that a deck is a Cartesian product, then with the use of ADTs, it is possible to add more type safety
 
 ## Roadmap
-The game engine is working perfectly, but still has a lot of work [TODO](./TODO.md).
+The game engine works perfectly but still needs much work [TODO](./TODO.md).
 
 ## Make
 
@@ -75,7 +75,7 @@ curl --location 'http://127.0.0.1:3000/v1/table' \
 }
 ```
 
-3. let each player discard and draw from one to three cards (one request equals to one rebuy)
+3. let each player discard and draw from one to three cards (one request equals one rebuy)
 ```sh
 curl --location --request PUT 'http://127.0.0.1:3000/v1/table' \
 --header 'Content-Type: application/json' \
